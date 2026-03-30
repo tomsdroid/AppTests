@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Al-Firdaus Alumni</title>
+
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+        ></script>
+        <link
+            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+            rel="stylesheet"
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+            rel="stylesheet"
+        />
+
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ["Inter", "sans-serif"],
+                            serif: ["Playfair Display", "serif"]
+                        },
+                        colors: {
+                            emerald: { 900: "#064e3b", 800: "#065f46" },
+                            amber: { 400: "#fbbf24", 500: "#f59e0b" }
+                        }
+                    }
+                }
+            };
+        </script>
+        <style>
+            ::-webkit-scrollbar {
+                display: none;
+            }
+            * {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+            [x-cloak] {
+                display: none !important;
+            }
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body
+        class="bg-gray-200 text-slate-800 antialiased flex items-center justify-center min-h-screen"
+    >
+        <div
+            x-data="alumniApp()"
+            x-init="initApp()"
+            class="w-full max-w-md h-screen sm:h-[90vh] bg-slate-50 sm:rounded-[2rem] sm:shadow-2xl relative overflow-hidden flex flex-col"
+        >
+            <div
+                x-show="screen === 'splash'"
+                x-transition.opacity.duration.800ms
+                class="absolute inset-0 bg-emerald-900 z-50 flex flex-col items-center justify-center"
+            >
+                <div
+                    class="w-24 h-24 rounded-full border-2 border-amber-400 flex items-center justify-center mb-4"
+                >
+                    <i class="bx bxs-moon text-5xl text-amber-400"></i>
+                </div>
+                <h1
+                    class="font-serif text-3xl text-amber-400 font-bold tracking-wide"
+                >
+                    Al-Firdaus
+                </h1>
+                <p
+                    class="text-emerald-100/70 text-sm mt-2 tracking-widest uppercase"
+                >
+                    Alumni Network
+                </p>
+            </div>
+
+            <div
+                x-show="screen === 'onboarding'"
+                x-cloak
+                x-transition.opacity
+                class="absolute inset-0 bg-slate-50 z-40 flex flex-col"
+            >
+                <div class="flex-1 relative overflow-hidden">
+                    <template x-for="(slide, index) in slides" :key="index">
+                        <div
+                            x-show="currentSlide === index"
+                            x-transition.opacity.duration.500ms
+                            class="absolute inset-0 flex flex-col items-center justify-center px-8 text-center"
+                        >
+                            <div
+                                class="w-64 h-64 bg-emerald-100 rounded-full flex items-center justify-center mb-8"
+                            >
+                                <i
+                                    :class="slide.icon"
+                                    class="text-7xl text-emerald-900"
+                                ></i>
+                            </div>
+                            <h2
+                                class="font-serif text-2xl font-bold text-emerald-900 mb-3"
+                                x-text="slide.title"
+                            ></h2>
+                            <p
+                                class="text-slate-500 text-sm leading-relaxed"
+                                x-text="slide.desc"
+                            ></p>
+                        </div>
+                    </template>
+                </div>
+                <div class="p-8 flex flex-col items-center">
+                    <div class="flex gap-2 mb-8">
+                        <template x-for="(slide, index) in slides" :key="index">
+                            <div
+                                class="w-2.5 h-2.5 rounded-full transition-colors"
+                                :class="currentSlide === index ? 'bg-amber-400' : 'bg-slate-300'"
+                            ></div>
+                        </template>
+                    </div>
+                    <button
+                        @click="nextSlide()"
+                        class="w-full bg-emerald-900 text-white py-3.5 rounded-xl font-semibold shadow-lg shadow-emerald-900/30 active:scale-95 transition-transform"
+                    >
+                        <span
+                            x-text="currentSlide === slides.length - 1 ? 'Mulai Sekarang' : 'Selanjutnya'"
+                        ></span>
+                    </button>
+                </div>
+            </div>
+
+            <div
+                x-show="screen === 'login'"
+                x-cloak
+                x-transition.opacity
+                class="absolute inset-0 bg-slate-50 z-30 flex flex-col p-8 justify-center"
+            >
+                <div class="text-center mb-10">
+                    <i class="bx bxs-moon text-5xl text-emerald-900 mb-4"></i>
+                    <h2 class="font-serif text-2xl font-bold text-emerald-900">
+                        Ahlan Wa Sahlan
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-2">
+                        Masukkan nomor WhatsApp Anda untuk masuk ke jaringan alumni.
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <div class="relative">
+                        <span
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium"
+                            >+62</span
+                        >
+                        <input
+                            type="tel"
+                            placeholder="812-3456-7890"
+                            x-model="displayPhone"
+                            @input="formatInput()"
+                            class="w-full bg-white border border-slate-200 rounded-xl py-3.5 pl-14 pr-4 outline-none focus:border-emerald-900 focus:ring-1 focus:ring-emerald-900 transition-all font-medium"
+                        />
+                    </div>
+                    <button
+                        @click="sendOTP()"
+                        :disabled="rawPhone.length < 9"
+                        :class="rawPhone.length >= 9 ? 'bg-emerald-900 text-white shadow-emerald-900/30 active:scale-95' : 'bg-slate-200 text-slate-400'"
+                        class="w-full py-3.5 rounded-xl font-semibold shadow-lg transition-all flex items-center justify-center gap-2"
+                    >
+                        Kirim Kode OTP <i class="bx bx-send"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div
+                x-show="screen === 'otp'"
+                x-cloak
+                x-transition.opacity
+                class="absolute inset-0 bg-slate-50 z-30 flex flex-col p-8 justify-start pt-20"
+            >
+                <button @click="screen = 'login'" class="absolute top-6 left-6 text-slate-400 hover:text-emerald-900">
+                    <i class="bx bx-arrow-back text-2xl"></i>
+                </button>
+                <div class="text-center mb-8">
+                    <h2 class="font-serif text-2xl font-bold text-emerald-900 mb-2">
+                        Verifikasi Kode
+                    </h2>
+                    <p class="text-slate-500 text-sm">
+                        Kami telah mengirimkan 4 digit kode ke WhatsApp Anda <br>
+                        <span class="font-bold text-slate-700" x-text="'+62 ' + displayPhone"></span>
+                    </p>
+                </div>
+                <div class="flex justify-center gap-3 mb-8">
+                    <template x-for="(digit, index) in otp" :key="index">
+                        <input
+                            type="number"
+                            maxlength="1"
+                            x-model="otp[index]"
+                            @input="handleOTPInput(index, $event)"
+                            @keydown.backspace="handleOTPBackspace(index, $event)"
+                            :id="'otp-' + index"
+                            class="w-14 h-16 text-center text-2xl font-bold bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/20 transition-all"
+                        />
+                    </template>
+                </div>
+                <button
+                    @click="verifyOTP()"
+                    :disabled="!isOTPFilled"
+                    :class="isOTPFilled ? 'bg-emerald-900 text-white shadow-emerald-900/30 active:scale-95' : 'bg-slate-200 text-slate-400'"
+                    class="w-full py-3.5 rounded-xl font-semibold shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                    Verifikasi OTP <i class="bx bx-check-circle"></i>
+                </button>
+                <div class="text-center mt-6">
+                    <p class="text-sm text-slate-500">Belum menerima kode?</p>
+                    <button class="text-emerald-900 font-bold text-sm mt-1 hover:underline">Kirim Ulang Kode</button>
+                </div>
+            </div>
+
+            <div
+                x-show="screen === 'setup_profile'"
+                x-cloak
+                x-transition.opacity
+                class="absolute inset-0 bg-slate-50 z-30 flex flex-col p-6 sm:p-8 overflow-y-auto"
+            >
+                <div class="text-center mb-6 pt-4">
+                    <h2 class="font-serif text-2xl font-bold text-emerald-900">
+                        Lengkapi Profil
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-1">
+                        Mari saling mengenal sesama alumni.
+                    </p>
+                </div>
+
+                <div class="space-y-5 pb-8">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-24 h-24 rounded-full border-4 border-emerald-100 bg-slate-200 overflow-hidden relative group">
+                            <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.avatarSeed}&backgroundColor=c0ecd2`" class="w-full h-full object-cover">
+                            <div @click="changeAvatar()" class="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="bx bx-refresh text-white text-2xl"></i>
+                            </div>
+                        </div>
+                        <button @click="changeAvatar()" class="text-xs font-bold text-emerald-900 bg-emerald-100 px-3 py-1 rounded-full">Ganti Avatar</button>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
+                        <div class="relative">
+                            <i class="bx bx-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                            <input type="text" x-model="userProfile.name" placeholder="Contoh: Abdullah Azzam" class="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 outline-none focus:border-emerald-900 focus:ring-1 focus:ring-emerald-900 transition-all font-medium text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Jenis Kelamin</label>
+                        <div class="flex gap-3">
+                            <button @click="userProfile.gender = 'L'" :class="userProfile.gender === 'L' ? 'bg-emerald-900 text-white border-emerald-900' : 'bg-white text-slate-600 border-slate-200'" class="flex-1 py-3 border rounded-xl font-medium text-sm transition-colors flex justify-center items-center gap-2">
+                                <i class="bx bx-male-sign text-lg"></i> Laki-laki
+                            </button>
+                            <button @click="userProfile.gender = 'P'" :class="userProfile.gender === 'P' ? 'bg-emerald-900 text-white border-emerald-900' : 'bg-white text-slate-600 border-slate-200'" class="flex-1 py-3 border rounded-xl font-medium text-sm transition-colors flex justify-center items-center gap-2">
+                                <i class="bx bx-female-sign text-lg"></i> Perempuan
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Tahun Kelulusan (Angkatan)</label>
+                        <div class="relative">
+                            <i class="bx bx-calendar absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                            <select x-model="userProfile.batch" class="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 outline-none focus:border-emerald-900 focus:ring-1 focus:ring-emerald-900 transition-all font-medium text-sm appearance-none">
+                                <option value="">Pilih Tahun Angkatan</option>
+                                <template x-for="year in generateYears()" :key="year">
+                                    <option :value="year" x-text="year"></option>
+                                </template>
+                            </select>
+                            <i class="bx bx-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Riwayat Pendidikan (Al-Firdaus)</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center p-3 border rounded-xl cursor-pointer transition-colors" :class="userProfile.education.includes('MTs') ? 'border-emerald-900 bg-emerald-50' : 'border-slate-200 bg-white'">
+                                <div class="w-5 h-5 rounded border flex items-center justify-center mr-3" :class="userProfile.education.includes('MTs') ? 'bg-emerald-900 border-emerald-900' : 'border-slate-300 bg-slate-100'">
+                                    <i class="bx bx-check text-white text-sm" x-show="userProfile.education.includes('MTs')"></i>
+                                </div>
+                                <input type="checkbox" value="MTs" x-model="userProfile.education" class="hidden">
+                                <span class="font-medium text-sm text-slate-700">MTs Al-Firdaus (Menengah)</span>
+                            </label>
+                            
+                            <label class="flex items-center p-3 border rounded-xl cursor-pointer transition-colors" :class="userProfile.education.includes('MA') ? 'border-emerald-900 bg-emerald-50' : 'border-slate-200 bg-white'">
+                                <div class="w-5 h-5 rounded border flex items-center justify-center mr-3" :class="userProfile.education.includes('MA') ? 'bg-emerald-900 border-emerald-900' : 'border-slate-300 bg-slate-100'">
+                                    <i class="bx bx-check text-white text-sm" x-show="userProfile.education.includes('MA')"></i>
+                                </div>
+                                <input type="checkbox" value="MA" x-model="userProfile.education" class="hidden">
+                                <span class="font-medium text-sm text-slate-700">MA Al-Firdaus (Atas)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button
+                        @click="finishSetup()"
+                        :disabled="!isProfileComplete"
+                        :class="isProfileComplete ? 'bg-emerald-900 text-white shadow-emerald-900/30 active:scale-95' : 'bg-slate-200 text-slate-400'"
+                        class="w-full mt-4 py-3.5 rounded-xl font-semibold shadow-lg transition-all flex items-center justify-center gap-2"
+                    >
+                        Simpan & Masuk <i class="bx bx-right-arrow-alt text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div
+                x-show="screen === 'main'"
+                x-cloak
+                class="flex-1 flex flex-col w-full h-full relative z-20 bg-slate-50"
+            >
+                <header
+                    x-show="tab !== 'profile'"
+                    class="bg-emerald-900 text-white px-5 pt-8 pb-4 rounded-b-[2rem] shadow-lg shrink-0"
+                >
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p
+                                class="text-amber-400 text-xs font-semibold tracking-wider uppercase mb-1"
+                            >
+                                Santri Baru
+                            </p>
+                            <h1 class="font-serif text-xl font-bold">
+                                Assalamu'alaikum, <span x-text="userProfile.name ? userProfile.name.split(' ')[0] : 'Seli'"></span>
+                            </h1>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-full bg-slate-200 border-2 border-amber-400 overflow-hidden shrink-0 cursor-pointer hover:opacity-80"
+                            @click="tab = 'profile'"
+                        >
+                            <img
+                                :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.avatarSeed}&backgroundColor=c0ecd2`"
+                                class="w-full h-full object-cover"
+                            />
+                        </div>
+                    </div>
+                </header>
+
+                <main class="flex-1 overflow-y-auto px-5 py-6 pb-24">
+                    
+                    <div x-show="tab === 'home'" x-transition.opacity>
+                        
+                        <div class="bg-gradient-to-br from-emerald-800 to-emerald-900 p-5 rounded-2xl shadow-lg border border-emerald-700 mb-6 text-white relative overflow-hidden">
+                            <div class="absolute -right-4 -top-4 opacity-10">
+                                <i class='bx bxs-mosque text-8xl'></i>
+                            </div>
+                            
+                            <div class="flex justify-between items-center mb-4 relative z-10">
+                                <div>
+                                    <h3 class="font-serif font-bold text-lg text-amber-400">Jadwal Sholat</h3>
+                                    <p class="text-[10px] text-emerald-200" x-text="currentDateStr"></p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="block text-2xl font-black font-mono tracking-wider" x-text="currentTimeStr"></span>
+                                    <span class="text-[10px] text-emerald-200" x-text="nextPrayerText"></span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center bg-white/10 rounded-xl p-3 relative z-10 backdrop-blur-sm">
+                                <template x-for="(prayer, name) in prayerTimes" :key="name">
+                                    <div class="flex flex-col items-center flex-1">
+                                        <span class="text-[9px] uppercase tracking-widest font-bold text-emerald-100 mb-1" x-text="name"></span>
+                                        <span class="text-sm font-bold" :class="isCurrentPrayer(name) ? 'text-amber-400 scale-110 transition-transform' : 'text-white'" x-text="prayer"></span>
+                                        <div x-show="isCurrentPrayer(name)" class="w-1 h-1 bg-amber-400 rounded-full mt-1 animate-pulse"></div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6"
+                        >
+                            <div class="flex justify-between items-end mb-3">
+                                <div>
+                                    <span
+                                        class="text-slate-400 text-xs font-medium"
+                                        >Total Amal Jariyah (XP)</span
+                                    >
+                                    <div
+                                        class="text-2xl font-bold text-emerald-900 mt-1"
+                                    >
+                                        10
+                                        <span
+                                            class="text-xs text-slate-500 font-normal"
+                                            >XP</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <i
+                                        class="bx bx-medal text-3xl text-slate-300"
+                                    ></i>
+                                    <div
+                                        class="text-xs font-bold text-slate-400 mt-1"
+                                    >
+                                        Rank Baru
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden"
+                            >
+                                <div
+                                    class="bg-amber-400 h-2.5 rounded-full w-[5%]"
+                                ></div>
+                            </div>
+                            <p
+                                class="text-[10px] text-slate-400 text-right mt-2"
+                            >
+                                90 XP menuju Level 2
+                            </p>
+                        </div>
+
+                        <h3
+                            class="font-serif font-bold text-emerald-900 mb-4 flex items-center gap-2"
+                        >
+                            <i class="bx bx-calendar-event text-amber-500"></i>
+                            Agenda Terdekat
+                        </h3>
+                        <div
+                            class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex gap-4"
+                        >
+                            <div
+                                class="bg-emerald-50 rounded-xl p-2 text-center min-w-[60px] shrink-0"
+                            >
+                                <span
+                                    class="block text-xs text-emerald-600 font-bold uppercase"
+                                    >APR</span
+                                >
+                                <span
+                                    class="block text-xl font-bold text-emerald-900"
+                                    >12</span
+                                >
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">
+                                    Reuni Akbar Angkatan '18
+                                </h4>
+                                <p
+                                    class="text-xs text-slate-500 mt-1 line-clamp-2"
+                                >
+                                    Silaturahmi dan buka puasa bersama di Aula
+                                    Utama Al-Firdaus.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        x-show="tab === 'gallery'"
+                        x-cloak
+                        x-transition.opacity
+                    >
+                        <h2
+                            class="font-serif font-bold text-xl text-emerald-900 mb-4"
+                        >
+                            Galeri Kenangan
+                        </h2>
+                        <div class="grid grid-cols-2 gap-3">
+                            <template x-for="i in 6">
+                                <div
+                                    class="relative rounded-2xl overflow-hidden group aspect-square bg-slate-200"
+                                >
+                                    <img
+                                        :src="`https://picsum.photos/400/400?random=${i}`"
+                                        class="w-full h-full object-cover"
+                                        loading="lazy"
+                                    />
+                                    <div
+                                        class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3"
+                                    >
+                                        <button
+                                            @click="downloadImage(`https://picsum.photos/400/400?random=${i}`, `kenangan-alfirdaus-${i}.jpg`)"
+                                            class="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white hover:bg-emerald-600 transition-colors active:scale-95 shadow-sm"
+                                            title="Download Foto"
+                                        >
+                                            <i class="bx bx-download text-lg"></i>
+                                        </button>
+                                        <button
+                                            @click="shareImage(`https://picsum.photos/400/400?random=${i}`, `Kenangan Al-Firdaus`)"
+                                            class="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white hover:bg-amber-500 transition-colors active:scale-95 shadow-sm"
+                                            title="Bagikan"
+                                        >
+                                            <i class="bx bx-share-alt text-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div
+                        x-show="tab === 'tausiyah'"
+                        x-cloak
+                        x-transition.opacity
+                    >
+                        <h2
+                            class="font-serif font-bold text-xl text-emerald-900 mb-4"
+                        >
+                            Tausiyah & Artikel
+                        </h2>
+                        <div class="space-y-4">
+                            <template x-for="i in 4">
+                                <div
+                                    class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex gap-4"
+                                >
+                                    <div
+                                        class="w-20 h-20 rounded-xl bg-slate-200 overflow-hidden shrink-0"
+                                    >
+                                        <img
+                                            :src="`https://picsum.photos/200/200?random=${i+10}`"
+                                            class="w-full h-full object-cover"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                    <div class="flex-1">
+                                        <span
+                                            class="text-[10px] font-bold text-amber-500 uppercase tracking-wider"
+                                            >Kajian Rutin</span
+                                        >
+                                        <h4
+                                            class="font-bold text-slate-800 text-sm mt-1 leading-snug"
+                                        >
+                                            Menjaga Ukhuwah di Era Digital
+                                        </h4>
+                                        <div
+                                            class="flex items-center gap-2 mt-2 text-xs text-slate-400"
+                                        >
+                                            <i class="bx bx-time"></i> 3 min
+                                            read
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div
+                        x-show="tab === 'leaderboard'"
+                        x-cloak
+                        x-transition.opacity
+                    >
+                        <h2
+                            class="font-serif font-bold text-xl text-emerald-900 mb-4 text-center"
+                        >
+                            Papan Amal
+                        </h2>
+                        <div
+                            class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden p-2"
+                        >
+                            <template
+                                x-for="(user, index) in leaderboards"
+                                :key="index"
+                            >
+                                <div
+                                    class="flex items-center p-3 border-b border-slate-50 last:border-0"
+                                >
+                                    <div
+                                        class="w-6 text-center font-bold text-sm"
+                                        :class="index === 0 ? 'text-amber-400' : index === 1 ? 'text-slate-400' : index === 2 ? 'text-amber-600' : 'text-slate-300'"
+                                        x-text="index + 1"
+                                    ></div>
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-slate-100 overflow-hidden mx-3"
+                                    >
+                                        <img
+                                            :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`"
+                                            class="w-full h-full"
+                                        />
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4
+                                            class="font-bold text-slate-800 text-sm"
+                                            x-text="user.name"
+                                        ></h4>
+                                        <p
+                                            class="text-[10px] text-slate-400"
+                                            x-text="user.batch"
+                                        ></p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span
+                                            class="block text-emerald-900 font-bold text-sm"
+                                            x-text="user.xp"
+                                        ></span>
+                                        <span
+                                            class="text-[9px] text-slate-400 uppercase"
+                                            >XP</span
+                                        >
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div
+                        x-show="tab === 'profile'"
+                        x-cloak
+                        x-transition.opacity
+                    >
+                        <h2 class="font-serif font-bold text-2xl text-emerald-900 mb-6 text-center">Profil Saya</h2>
+                        
+                        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 mb-6 flex flex-col items-center text-center">
+                            <div class="w-24 h-24 rounded-full border-4 border-emerald-100 bg-slate-200 overflow-hidden mb-4 shadow-md">
+                                <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.avatarSeed}&backgroundColor=c0ecd2`" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="font-bold text-xl text-slate-800" x-text="userProfile.name ? userProfile.name : 'Nama Alumni'"></h3>
+                            <p class="text-sm text-slate-500 mt-1 font-medium" x-text="userProfile.batch ? 'Angkatan ' + userProfile.batch : 'Angkatan'"></p>
+                            <div class="mt-4 inline-block bg-amber-100 text-amber-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                                Level 1 - Santri Baru
+                            </div>
+                        </div>
+
+                        <h3 class="font-bold text-slate-800 mb-3 px-2">Informasi Pribadi</h3>
+                        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-5 mb-6 space-y-4">
+                            <div class="flex justify-between items-center border-b border-slate-50 pb-4">
+                                <span class="text-xs text-slate-400 font-medium">Nomor Telepon</span>
+                                <span class="text-sm font-bold text-slate-700" x-text="'+62 ' + displayPhone"></span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-slate-50 pb-4">
+                                <span class="text-xs text-slate-400 font-medium">Jenis Kelamin</span>
+                                <span class="text-sm font-bold text-slate-700" x-text="userProfile.gender === 'L' ? 'Laki-laki' : (userProfile.gender === 'P' ? 'Perempuan' : '-')"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-slate-400 font-medium">Riwayat Pendidikan</span>
+                                <span class="text-sm font-bold text-slate-700" x-text="userProfile.education.join(', ') || '-'"></span>
+                            </div>
+                        </div>
+
+                        <button @click="logout()" class="w-full bg-red-50 text-red-600 border border-red-100 py-4 rounded-xl font-bold shadow-sm active:scale-95 transition-transform flex items-center justify-center gap-2">
+                            Keluar Akun <i class='bx bx-log-out text-lg'></i>
+                        </button>
+                    </div>
+
+                </main>
+
+                <nav
+                    class="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-100 flex justify-around pb-safe pt-2 pb-3 px-1 z-30"
+                >
+                    <button
+                        @click="tab = 'home'"
+                        class="flex flex-col items-center p-2 w-14 sm:w-16 transition-colors"
+                        :class="tab === 'home' ? 'text-emerald-900' : 'text-slate-400'"
+                    >
+                        <i
+                            class="bx text-2xl mb-1"
+                            :class="tab === 'home' ? 'bxs-home' : 'bx-home'"
+                        ></i>
+                        <span class="text-[10px] font-medium">Home</span>
+                    </button>
+                    <button
+                        @click="tab = 'gallery'"
+                        class="flex flex-col items-center p-2 w-14 sm:w-16 transition-colors"
+                        :class="tab === 'gallery' ? 'text-emerald-900' : 'text-slate-400'"
+                    >
+                        <i
+                            class="bx text-2xl mb-1"
+                            :class="tab === 'gallery' ? 'bxs-photo-album' : 'bx-photo-album'"
+                        ></i>
+                        <span class="text-[10px] font-medium">Galeri</span>
+                    </button>
+                    <button
+                        @click="tab = 'tausiyah'"
+                        class="flex flex-col items-center p-2 w-14 sm:w-16 transition-colors"
+                        :class="tab === 'tausiyah' ? 'text-emerald-900' : 'text-slate-400'"
+                    >
+                        <i
+                            class="bx text-2xl mb-1"
+                            :class="tab === 'tausiyah' ? 'bxs-book-heart' : 'bx-book-heart'"
+                        ></i>
+                        <span class="text-[10px] font-medium">Tausiyah</span>
+                    </button>
+                    <button
+                        @click="tab = 'leaderboard'"
+                        class="flex flex-col items-center p-2 w-14 sm:w-16 transition-colors"
+                        :class="tab === 'leaderboard' ? 'text-emerald-900' : 'text-slate-400'"
+                    >
+                        <i
+                            class="bx text-2xl mb-1"
+                            :class="tab === 'leaderboard' ? 'bxs-medal' : 'bx-medal'"
+                        ></i>
+                        <span class="text-[10px] font-medium">Rank</span>
+                    </button>
+                    <button
+                        @click="tab = 'profile'"
+                        class="flex flex-col items-center p-2 w-14 sm:w-16 transition-colors"
+                        :class="tab === 'profile' ? 'text-emerald-900' : 'text-slate-400'"
+                    >
+                        <i
+                            class="bx text-2xl mb-1"
+                            :class="tab === 'profile' ? 'bxs-user' : 'bx-user'"
+                        ></i>
+                        <span class="text-[10px] font-medium">Profil</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <script>
+            function alumniApp() {
+                return {
+                    screen: "splash", 
+                    currentSlide: 0,
+                    tab: "home", 
+                    
+                    rawPhone: "",
+                    displayPhone: "",
+                    otp: ["", "", "", ""],
+                    
+                    userProfile: {
+                        name: "",
+                        gender: "", 
+                        batch: "",
+                        education: [], 
+                        avatarSeed: "Felix" 
+                    },
+
+                    slides: [
+                        { icon: "bx-group", title: "Silaturahmi Abadi", desc: "Jaga terus komunikasi dan ukhuwah antar alumni Al-Firdaus di mana pun berada." },
+                        { icon: "bx-images", title: "Kenangan Indah", desc: "Akses galeri foto masa lalu dan simpan kenangan indah saat di pesantren." },
+                        { icon: "bx-book-open", title: "Tausiyah Harian", desc: "Dapatkan siraman rohani dan artikel bermanfaat khusus untuk para alumni." }
+                    ],
+                    leaderboards: [
+                        { name: "Ahmad Fulan", batch: "Angkatan 2018", xp: "4,200" },
+                        { name: "Umar Bin", batch: "Angkatan 2015", xp: "3,850" },
+                        { name: "Siti Aminah", batch: "Angkatan 2019", xp: "3,100" },
+                        { name: "Bang Toms", batch: "Angkatan 2010", xp: "2,100" }
+                    ],
+                    
+                    // JAM DIGITAL & JADWAL SHOLAT
+                    currentTimeStr: '00:00',
+                    currentDateStr: 'Senin, 1 Jan 2026',
+                    nextPrayerText: 'Menuju...',
+                    prayerTimes: {
+                        'Subuh': '04:20',
+                        'Dzuhur': '11:45',
+                        'Ashar': '15:05',
+                        'Maghrib': '17:50',
+                        'Isya': '19:05'
+                    },
+                    
+                    initApp() {
+                        setTimeout(() => {
+                            this.screen = "onboarding";
+                        }, 2000);
+                        document.addEventListener("deviceready", this.setupCordova.bind(this), false);
+                        
+                        // Aktifkan Jam Digital
+                        this.initClock();
+                    },
+
+                    initClock() {
+                        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                        this.currentDateStr = new Date().toLocaleDateString('id-ID', options);
+                        
+                        setInterval(() => {
+                            const now = new Date();
+                            const hours = String(now.getHours()).padStart(2, '0');
+                            const minutes = String(now.getMinutes()).padStart(2, '0');
+                            const current = `${hours}:${minutes}`;
+                            
+                            this.currentTimeStr = current;
+                            
+                            for (const [name, time] of Object.entries(this.prayerTimes)) {
+                                if (current === time && now.getSeconds() === 0) {
+                                    this.triggerAdzan(name);
+                                }
+                            }
+                            
+                            let nextPrayer = null;
+                            for (const [name, time] of Object.entries(this.prayerTimes)) {
+                                if (current < time) {
+                                    nextPrayer = name;
+                                    break;
+                                }
+                            }
+                            this.nextPrayerText = nextPrayer ? `Menuju ${nextPrayer}` : 'Menunggu Esok';
+                            
+                        }, 1000);
+                    },
+
+                    isCurrentPrayer(name) {
+                        return this.nextPrayerText.includes(name) || this.currentTimeStr === this.prayerTimes[name];
+                    },
+
+                    triggerAdzan(prayerName) {
+                        console.log(`[Cordova Trigger] Waktunya sholat ${prayerName}`);
+                        if (typeof cordova !== 'undefined') {
+                            /* Contoh Notifikasi Cordova:
+                            cordova.plugins.notification.local.schedule({
+                                title: 'Waktu Sholat',
+                                text: `Telah masuk waktu sholat ${prayerName}. Mari sejenak tinggalkan aktivitas.`,
+                                foreground: true,
+                                sound: 'file://assets/audio/adzan.mp3'
+                            });
+                            */
+                        }
+                    },
+                    
+                    setupCordova() {
+                        document.addEventListener("backbutton", () => {
+                            if (this.screen === "main") {
+                                if (this.tab !== "home") this.tab = "home";
+                                else navigator.app.exitApp();
+                            } else if (this.screen === "login" || this.screen === "onboarding") {
+                                navigator.app.exitApp();
+                            } else if (this.screen === "otp") {
+                                this.screen = "login";
+                            } else if (this.screen === "setup_profile") {
+                                this.screen = "otp";
+                            }
+                        }, false);
+                    },
+                    
+                    nextSlide() {
+                        if (this.currentSlide < this.slides.length - 1) this.currentSlide++;
+                        else this.screen = "login";
+                    },
+
+                    formatInput() {
+                        let raw = this.displayPhone.replace(/\D/g, "").replace(/^0+/, "").substring(0, 12);
+                        this.rawPhone = raw;
+                        
+                        let formatted = "";
+                        if (raw.length > 0) formatted += raw.substring(0, 3);
+                        if (raw.length > 3) formatted += "-" + raw.substring(3, 7);
+                        if (raw.length > 7) formatted += "-" + raw.substring(7, 11);
+                        if (raw.length > 11) formatted += "-" + raw.substring(11, 13);
+                        this.displayPhone = formatted;
+                    },
+
+                    sendOTP() {
+                        if (this.rawPhone.length >= 9) {
+                            this.otp = ["", "", "", ""]; 
+                            this.screen = "otp";
+                            setTimeout(() => document.getElementById('otp-0').focus(), 100);
+                        }
+                    },
+
+                    handleOTPInput(index, event) {
+                        let val = event.target.value;
+                        if (val.length > 1) {
+                            this.otp[index] = val.charAt(val.length - 1);
+                        }
+                        if (this.otp[index] !== "" && index < 3) {
+                            document.getElementById('otp-' + (index + 1)).focus();
+                        }
+                    },
+
+                    handleOTPBackspace(index, event) {
+                        if (this.otp[index] === "" && index > 0) {
+                            document.getElementById('otp-' + (index - 1)).focus();
+                        }
+                    },
+
+                    get isOTPFilled() {
+                        return this.otp.every(val => val !== "");
+                    },
+
+                    verifyOTP() {
+                        if (this.isOTPFilled) {
+                            this.screen = "setup_profile";
+                        }
+                    },
+
+                    generateYears() {
+                        const currentYear = new Date().getFullYear();
+                        const startYear = 1990;
+                        const years = [];
+                        for (let i = currentYear; i >= startYear; i--) {
+                            years.push(i);
+                        }
+                        return years;
+                    },
+
+                    changeAvatar() {
+                        const seeds = ["Felix", "Seli", "Aneka", "Toms", "Gizmo", "Bandit", "Luna", "Oliver"];
+                        this.userProfile.avatarSeed = seeds[Math.floor(Math.random() * seeds.length)];
+                    },
+
+                    get isProfileComplete() {
+                        return this.userProfile.name.trim() !== "" && 
+                               this.userProfile.gender !== "" && 
+                               this.userProfile.batch !== "" && 
+                               this.userProfile.education.length > 0;
+                    },
+
+                    finishSetup() {
+                        if (this.isProfileComplete) {
+                            this.leaderboards.push({
+                                name: this.userProfile.name,
+                                batch: "Angkatan " + this.userProfile.batch,
+                                xp: "10"
+                            });
+                            this.screen = "main";
+                            this.tab = "home";
+                        }
+                    },
+
+                    logout() {
+                        this.rawPhone = "";
+                        this.displayPhone = "";
+                        this.otp = ["", "", "", ""];
+                        this.userProfile = { name: "", gender: "", batch: "", education: [], avatarSeed: "Felix" };
+                        
+                        this.screen = "login";
+                        this.tab = "home";
+                    },
+
+                    async downloadImage(url, filename) {
+                        try {
+                            const response = await fetch(url);
+                            const blob = await response.blob();
+                            
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = blobUrl;
+                            a.download = filename || 'gambar-alfirdaus.jpg';
+                            document.body.appendChild(a);
+                            a.click();
+                            
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(blobUrl);
+                        } catch (error) {
+                            alert('Gagal mendownload gambar. Pastikan koneksi internet lancar.');
+                            console.error('Download error:', error);
+                        }
+                    },
+
+                    async shareImage(url, title) {
+                        if (navigator.share) {
+                            try {
+                                await navigator.share({
+                                    title: title || 'Kenangan Al-Firdaus',
+                                    text: 'Lihat foto kenangan alumni Al-Firdaus ini!',
+                                    url: url
+                                });
+                            } catch (error) {
+                                console.log('Batal membagikan', error);
+                            }
+                        } else {
+                            navigator.clipboard.writeText(url);
+                            alert('Link gambar berhasil disalin ke clipboard!');
+                        }
+                    }
+                };
+            }
+        </script>
+    </body>
+</html>
